@@ -4,7 +4,7 @@ import {
   LineChart as LineChartIcon, AlertTriangle, Scale, ChevronRight, LayoutGrid, 
   FileText, Share2, Save, Download, Printer, Lightbulb, 
   MoreHorizontal, Search, Settings, DollarSign, Hammer, RefreshCw, BarChart2, Table, Calendar, CheckSquare,
-  Menu, X, Filter, SlidersHorizontal, Eye, PlusCircle, ArrowUpRight, ArrowDownRight, Briefcase, PieChart as PieChartIcon, Settings2
+  Menu, X, Filter, SlidersHorizontal, Eye, PlusCircle, ArrowUpRight, ArrowDownRight, Briefcase, PieChart as PieChartIcon, Settings2, Layers
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Badge, Card, KPICard, StatusBadge, ProgressBar, Input, DataMetric, SegmentedControl, TrendIndicator } from '../components/ui/UIComponents';
@@ -123,132 +123,216 @@ const OverviewTab = () => (
 
 const CostTab = () => (
     <div className="space-y-6 animate-in fade-in duration-300">
-        {/* Split View: Cause (Inputs) & Effect (Result) */}
+        {/* Top Summary Bar - High Contrast for Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+             <Card className="p-4 bg-slate-900 text-white flex flex-col justify-between border-slate-900">
+                <div className="flex justify-between items-start">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Project Cost</span>
+                    <Hammer className="w-4 h-4 text-slate-400" />
+                </div>
+                <div>
+                    <span className="text-2xl font-bold">1,218.5 B</span>
+                    <span className="text-sm font-medium text-slate-400 ml-1">KRW</span>
+                </div>
+             </Card>
+             <Card className="p-4 flex flex-col justify-between">
+                <DataMetric label="Cost per Area (GFA)" value="9.24 M" subValue="per py" />
+                <div className="mt-2 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                    <div className="bg-emerald-500 h-full rounded-full" style={{width: '75%'}}></div>
+                </div>
+                <div className="text-[10px] text-slate-400 mt-1 flex justify-between">
+                    <span>Low</span>
+                    <span>Market Avg</span>
+                    <span>High</span>
+                </div>
+             </Card>
+             <Card className="p-4 flex flex-col justify-between">
+                 <DataMetric label="Hard Cost Ratio" value="73.9%" subValue="of Total Budget" />
+                 <TrendIndicator value={2.4} type="percentage" inverse />
+             </Card>
+             <Card className="p-4 flex flex-col justify-between">
+                 <DataMetric label="Land Cost Ratio" value="6.5%" subValue="of Total Budget" />
+                 <TrendIndicator value={-0.5} type="percentage" />
+             </Card>
+        </div>
+
+        {/* Split View: Inputs & Detail Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full">
             
-            {/* Left: Interactive Cost Drivers (Inputs) */}
-            <div className="lg:col-span-4 space-y-4">
-                <Card className="p-5 h-full">
+            {/* Left: Cost Drivers & Sensitivity (Interactive) */}
+            <div className="lg:col-span-4 space-y-6">
+                <Card className="p-5 h-full border-l-4 border-l-indigo-600">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-bold text-slate-800 text-base">Cost Assumptions</h3>
+                        <div className="flex items-center space-x-2">
+                             <Settings2 className="w-4 h-4 text-slate-500" />
+                             <h3 className="font-bold text-slate-800 text-sm">Sensitivity Drivers</h3>
+                        </div>
                         <Button size="xs" variant="ghost" icon={RefreshCw}>Reset</Button>
                     </div>
                     
-                    <div className="space-y-6">
-                        {/* Interactive Slider Group */}
+                    <div className="space-y-8">
+                        {/* Land Price Driver */}
                         <div className="space-y-3">
-                            <div className="flex justify-between text-sm">
-                                <span className="font-medium text-slate-700">Land Price / py</span>
-                                <span className="font-bold text-indigo-600">₩ 350.2 M</span>
+                            <div className="flex justify-between items-baseline">
+                                <span className="text-xs font-bold text-slate-700 uppercase">Land Price</span>
+                                <div className="text-right">
+                                    <span className="font-bold text-indigo-600 text-lg">350.2 M</span>
+                                    <span className="text-xs text-slate-400 ml-1">/ py</span>
+                                </div>
                             </div>
                             <input type="range" className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
-                            <div className="flex justify-between text-[10px] text-slate-400">
+                            <div className="flex justify-between text-[10px] text-slate-400 font-medium">
                                 <span>-10%</span>
-                                <span>Current</span>
+                                <span className="text-slate-900">Base Case</span>
                                 <span>+10%</span>
                             </div>
                         </div>
 
+                         {/* Hard Cost Driver */}
                          <div className="space-y-3">
-                            <div className="flex justify-between text-sm">
-                                <span className="font-medium text-slate-700">Hard Cost / py</span>
-                                <span className="font-bold text-indigo-600">₩ 9.24 M</span>
+                            <div className="flex justify-between items-baseline">
+                                <span className="text-xs font-bold text-slate-700 uppercase">Hard Cost</span>
+                                <div className="text-right">
+                                    <span className="font-bold text-indigo-600 text-lg">9.24 M</span>
+                                    <span className="text-xs text-slate-400 ml-1">/ py</span>
+                                </div>
                             </div>
                             <input type="range" className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600" />
-                            <div className="flex justify-between text-[10px] text-slate-400">
+                            <div className="flex justify-between text-[10px] text-slate-400 font-medium">
                                 <span>8.0M</span>
-                                <span>Current</span>
+                                <span className="text-slate-900">Current</span>
                                 <span>11.0M</span>
                             </div>
                         </div>
 
-                        <hr className="border-slate-100 my-4" />
-
-                        {/* Static Inputs Grid */}
-                        <div className="grid grid-cols-2 gap-4">
-                             <div>
-                                 <label className="text-[10px] font-bold text-slate-400 uppercase">Site Area</label>
-                                 <div className="flex items-baseline space-x-1 border-b border-slate-200 pb-1">
-                                    <span className="font-medium text-sm">2,258.1</span>
-                                    <span className="text-[10px] text-slate-500">㎡</span>
-                                 </div>
-                             </div>
-                             <div>
-                                 <label className="text-[10px] font-bold text-slate-400 uppercase">GFA</label>
-                                 <div className="flex items-baseline space-x-1 border-b border-slate-200 pb-1">
-                                    <span className="font-medium text-sm">32,178.9</span>
-                                    <span className="text-[10px] text-slate-500">㎡</span>
-                                 </div>
-                             </div>
+                        {/* Soft Cost Multiplier */}
+                         <div className="space-y-3">
+                            <div className="flex justify-between items-baseline">
+                                <span className="text-xs font-bold text-slate-700 uppercase">Soft Cost Load</span>
+                                <div className="text-right">
+                                    <span className="font-bold text-indigo-600 text-lg">12.5%</span>
+                                    <span className="text-xs text-slate-400 ml-1">of Hard Cost</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Button size="xs" variant="outline" className="flex-1">Low (10%)</Button>
+                                <Button size="xs" variant="primary" className="flex-1">Avg (12.5%)</Button>
+                                <Button size="xs" variant="outline" className="flex-1">High (15%)</Button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="mt-8 pt-6 border-t border-slate-100">
+                        <div className="bg-slate-50 p-3 rounded-lg">
+                            <div className="flex justify-between text-xs mb-1">
+                                <span className="text-slate-500">Est. Total Variance</span>
+                                <span className="font-bold text-rose-600">+12.4 B KRW</span>
+                            </div>
+                            <div className="flex justify-between text-xs">
+                                <span className="text-slate-500">Impact on Profit</span>
+                                <span className="font-bold text-rose-600">-0.8% p</span>
+                            </div>
                         </div>
                     </div>
                 </Card>
             </div>
 
-            {/* Right: Cost Breakdown & Metrics (Output) */}
-            <div className="lg:col-span-8 space-y-6">
-                {/* Top Banner */}
-                <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-6">
-                     <div className="flex flex-col">
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">Total Project Cost</span>
-                        <div className="flex items-baseline space-x-2">
-                             <span className="text-3xl font-bold text-slate-900">1,218.47</span>
-                             <span className="text-sm font-medium text-slate-500">B KRW</span>
+            {/* Right: Cost Breakdown Table (Dense & Benchmarked) */}
+            <div className="lg:col-span-8 flex flex-col">
+                <Card className="overflow-hidden flex-1 border border-slate-200 shadow-sm">
+                    <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                        <div className="flex items-center space-x-2">
+                             <h3 className="font-bold text-slate-800 text-sm">Budget Breakdown</h3>
+                             <Badge variant="outline">Detailed View</Badge>
                         </div>
-                     </div>
-                     <div className="flex space-x-8">
-                         <DataMetric label="Cost / GFA" value="2.80 M" subValue="per ㎡" align="right" />
-                         <DataMetric label="Land Ratio" value="6.5%" subValue="of Total" align="right" />
-                         <DataMetric label="Hard Cost" value="73.9%" subValue="of Total" align="right" />
-                     </div>
-                </div>
-
-                {/* Detailed Table */}
-                <Card className="overflow-hidden">
-                    <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <h3 className="font-bold text-slate-800 text-sm">Breakdown Detail</h3>
                         <div className="flex space-x-2">
-                            <Button size="xs" variant="secondary" icon={Download}>Excel</Button>
+                            <Button size="xs" variant="outline" icon={Briefcase}>Load Template</Button>
+                            <Button size="xs" variant="excel" icon={Download}>Excel</Button>
                         </div>
                     </div>
                     <div className="overflow-x-auto">
                         <table className="w-full text-sm">
-                            <thead className="bg-slate-50 text-xs text-slate-500 uppercase font-medium">
+                            <thead className="bg-white text-xs text-slate-500 uppercase font-semibold border-b-2 border-slate-100">
                                 <tr>
-                                    <th className="px-4 py-3 text-left w-1/3">Item</th>
-                                    <th className="px-4 py-3 text-right">Amount (B)</th>
-                                    <th className="px-4 py-3 text-right">Ratio</th>
-                                    <th className="px-4 py-3 text-right w-1/4">Metric</th>
+                                    <th className="px-4 py-3 text-left w-1/3">Cost Category</th>
+                                    <th className="px-4 py-3 text-right">Budget (B)</th>
+                                    <th className="px-4 py-3 text-right">Per Py (M)</th>
+                                    <th className="px-4 py-3 text-right">% of Total</th>
+                                    <th className="px-4 py-3 text-right text-indigo-600 bg-indigo-50/30">Market Avg.</th>
+                                    <th className="px-4 py-3 text-center">Status</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
-                                {[
-                                    { label: 'Land Cost', value: '79.09', pct: 6.5, metric: '35.0 M / py' },
-                                    { label: 'Construction (Hard)', value: '900.98', pct: 73.9, metric: '9.24 M / py' },
-                                    { label: 'Design & Supervision', value: '54.06', pct: 4.4, metric: '6.0% of Hard' },
-                                    { label: 'Finance Cost', value: '132.53', pct: 10.9, metric: 'Avg 7.4%' },
-                                    { label: 'Contingency', value: '51.81', pct: 4.3, metric: '4.0% of Hard' },
-                                ].map((row, i) => (
-                                    <tr key={i} className="hover:bg-slate-50/80 transition-colors group">
-                                        <td className="px-4 py-3 font-medium text-slate-700">{row.label}</td>
-                                        <td className="px-4 py-3 text-right font-bold text-slate-900">{row.value}</td>
-                                        <td className="px-4 py-3 text-right">
-                                            <div className="flex items-center justify-end space-x-2">
-                                                <span className="text-xs text-slate-500 w-8">{row.pct}%</span>
-                                                <div className="w-16 bg-slate-100 rounded-full h-1.5">
-                                                    <div className="bg-slate-600 h-1.5 rounded-full" style={{width: `${row.pct}%`}}></div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-4 py-3 text-right text-xs text-slate-400 group-hover:text-slate-600">{row.metric}</td>
-                                    </tr>
-                                ))}
+                                {/* Land Group */}
+                                <tr className="bg-slate-50/50 font-bold text-slate-800">
+                                    <td className="px-4 py-2" colSpan={6}>1. Land Acquisition</td>
+                                </tr>
+                                <tr className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-4 py-2 pl-8 text-slate-600">Land Price</td>
+                                    <td className="px-4 py-2 text-right font-medium">79.09</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">35.02</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">6.5%</td>
+                                    <td className="px-4 py-2 text-right text-slate-500 bg-indigo-50/10">34.50</td>
+                                    <td className="px-4 py-2 text-center"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span></td>
+                                </tr>
+                                 <tr className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-4 py-2 pl-8 text-slate-600">Acquisition Tax & Fees</td>
+                                    <td className="px-4 py-2 text-right font-medium">3.64</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">1.61</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">0.3%</td>
+                                    <td className="px-4 py-2 text-right text-slate-500 bg-indigo-50/10">4.6% Rate</td>
+                                    <td className="px-4 py-2 text-center"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span></td>
+                                </tr>
+
+                                {/* Hard Cost Group */}
+                                <tr className="bg-slate-50/50 font-bold text-slate-800 border-t border-slate-200">
+                                    <td className="px-4 py-2" colSpan={6}>2. Construction (Hard Cost)</td>
+                                </tr>
+                                <tr className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-4 py-2 pl-8 text-slate-600">Direct Construction</td>
+                                    <td className="px-4 py-2 text-right font-bold text-slate-900">900.98</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">9.24</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">73.9%</td>
+                                    <td className="px-4 py-2 text-right text-slate-500 bg-indigo-50/10">8.80</td>
+                                    <td className="px-4 py-2 text-center"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block"></span></td>
+                                </tr>
+                                <tr className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-4 py-2 pl-8 text-slate-600">Demolition</td>
+                                    <td className="px-4 py-2 text-right font-medium">5.20</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">0.05</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">0.4%</td>
+                                    <td className="px-4 py-2 text-right text-slate-500 bg-indigo-50/10">-</td>
+                                    <td className="px-4 py-2 text-center"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span></td>
+                                </tr>
+
+                                {/* Soft Cost Group */}
+                                <tr className="bg-slate-50/50 font-bold text-slate-800 border-t border-slate-200">
+                                    <td className="px-4 py-2" colSpan={6}>3. Soft Cost & Finance</td>
+                                </tr>
+                                <tr className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-4 py-2 pl-8 text-slate-600">Design & Supervision</td>
+                                    <td className="px-4 py-2 text-right font-medium">54.06</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">0.55</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">4.4%</td>
+                                    <td className="px-4 py-2 text-right text-slate-500 bg-indigo-50/10">4.0%</td>
+                                    <td className="px-4 py-2 text-center"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block"></span></td>
+                                </tr>
+                                <tr className="hover:bg-slate-50 transition-colors">
+                                    <td className="px-4 py-2 pl-8 text-slate-600">Finance Cost (Interest)</td>
+                                    <td className="px-4 py-2 text-right font-medium">132.53</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">1.36</td>
+                                    <td className="px-4 py-2 text-right text-slate-500">10.9%</td>
+                                    <td className="px-4 py-2 text-right text-slate-500 bg-indigo-50/10">8.5%</td>
+                                    <td className="px-4 py-2 text-center"><span className="w-2 h-2 rounded-full bg-rose-500 inline-block"></span></td>
+                                </tr>
                             </tbody>
-                            <tfoot className="bg-slate-50 border-t border-slate-200">
+                            <tfoot className="bg-slate-900 text-white border-t-2 border-slate-800">
                                 <tr>
-                                    <td className="px-4 py-3 font-bold text-slate-900">Total</td>
-                                    <td className="px-4 py-3 text-right font-bold text-indigo-600 text-base">1,218.47</td>
-                                    <td className="px-4 py-3 text-right font-bold text-slate-900">100.0%</td>
+                                    <td className="px-4 py-3 font-bold">Total Project Cost</td>
+                                    <td className="px-4 py-3 text-right font-bold text-lg">1,218.47</td>
+                                    <td className="px-4 py-3 text-right font-medium text-slate-400">12.49</td>
+                                    <td className="px-4 py-3 text-right font-bold">100.0%</td>
+                                    <td className="px-4 py-3 text-right text-slate-400">11.80</td>
                                     <td></td>
                                 </tr>
                             </tfoot>
@@ -260,97 +344,189 @@ const CostTab = () => (
     </div>
 );
 
-const RevenueTab = () => (
+const RevenueTab = () => {
+    // Mock Data for Stacking Plan (Visualizing Zones)
+    const zones = [
+        { id: 'off-h', name: 'Office High', floors: '20F - 35F', area: 15400, price: 125.0, type: 'Office', color: 'bg-blue-500' },
+        { id: 'off-l', name: 'Office Low', floors: '4F - 19F', area: 16200, price: 110.0, type: 'Office', color: 'bg-blue-400' },
+        { id: 'amenity', name: 'Amenity', floors: '3F', area: 1200, price: 0, type: 'Common', color: 'bg-slate-400' },
+        { id: 'retail', name: 'Retail (Podium)', floors: '1F - 2F', area: 3500, price: 180.0, type: 'Retail', color: 'bg-emerald-500' },
+        { id: 'retail-b', name: 'Retail (Bsmt)', floors: 'B1', area: 1800, price: 90.0, type: 'Retail', color: 'bg-emerald-600' },
+        { id: 'parking', name: 'Parking', floors: 'B2 - B6', area: 12000, price: 0, type: 'Parking', color: 'bg-slate-300' },
+    ];
+
+    return (
     <div className="space-y-6 animate-in fade-in duration-300">
-         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main KPI Cards */}
-            <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="p-5 border-l-4 border-l-emerald-500">
-                    <DataMetric label="Total Revenue" value="3,396.2 B" subValue="Sales + Lease Income" />
-                </Card>
-                <Card className="p-5 border-l-4 border-l-emerald-500">
-                    <DataMetric label="Total Profit" value="2,177.7 B" subValue="Profit Margin 64.1%" />
-                </Card>
-                <Card className="p-5 border-l-4 border-l-emerald-500">
-                    <DataMetric label="Avg Sales Price" value="105.5 M" subValue="per py" />
+        <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-bold text-slate-900 flex items-center">
+                <Coins className="w-5 h-5 mr-2 text-indigo-600"/> Revenue Modeling
+            </h2>
+            <div className="flex space-x-2 bg-slate-100 p-1 rounded-lg">
+                <button className="px-3 py-1 bg-white shadow-sm rounded-md text-xs font-bold text-indigo-600">Sale (Bunyang)</button>
+                <button className="px-3 py-1 text-slate-500 text-xs font-medium hover:text-slate-900">Lease (Imdae)</button>
+                <button className="px-3 py-1 text-slate-500 text-xs font-medium hover:text-slate-900">Mixed</button>
+            </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-[700px]">
+            
+            {/* Left Column: Visual Stacking Plan (Proptech Style) */}
+            <div className="lg:col-span-4 flex flex-col h-full">
+                <Card className="p-4 h-full flex flex-col bg-slate-50/50 border-slate-200">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="font-bold text-slate-800 text-sm flex items-center">
+                            <Layers className="w-4 h-4 mr-2 text-slate-500"/> MD Stacking Plan
+                        </h3>
+                        <Badge variant="outline">GFA 50,100 ㎡</Badge>
+                    </div>
+                    
+                    {/* The Visual Stack */}
+                    <div className="flex-1 flex flex-col-reverse gap-1 overflow-y-auto pr-2 custom-scrollbar border-l-2 border-dashed border-slate-300 pl-4 relative">
+                        {/* Floor Height Markers */}
+                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-slate-200 hidden"></div>
+                        
+                        {zones.map((zone) => (
+                            <div key={zone.id} className="w-full group relative transition-all hover:scale-[1.02] cursor-pointer">
+                                {/* Floor Label */}
+                                <div className="absolute -left-16 top-1/2 -translate-y-1/2 text-[10px] text-slate-400 font-mono w-10 text-right">
+                                    {zone.floors}
+                                </div>
+                                
+                                {/* The Block */}
+                                <div className={`
+                                    w-full rounded-md shadow-sm border border-white/20 p-3 flex justify-between items-center
+                                    ${zone.color} text-white
+                                    ${zone.type === 'Parking' ? 'h-12 opacity-50' : 'h-20'}
+                                `}>
+                                    <div>
+                                        <div className="font-bold text-sm">{zone.name}</div>
+                                        <div className="text-[10px] opacity-80">{zone.area.toLocaleString()} ㎡</div>
+                                    </div>
+                                    {zone.price > 0 && (
+                                        <div className="text-right">
+                                            <div className="font-bold text-sm">₩{zone.price} M</div>
+                                            <div className="text-[10px] opacity-80">per py</div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    <div className="mt-4 flex flex-wrap gap-2 text-[10px] justify-center text-slate-500">
+                        <span className="flex items-center"><span className="w-2 h-2 rounded-full bg-blue-500 mr-1"></span> Office</span>
+                        <span className="flex items-center"><span className="w-2 h-2 rounded-full bg-emerald-500 mr-1"></span> Retail</span>
+                        <span className="flex items-center"><span className="w-2 h-2 rounded-full bg-slate-300 mr-1"></span> Parking</span>
+                    </div>
                 </Card>
             </div>
 
-            {/* Left: Unit Mix (The Driver) */}
-            <Card className="lg:col-span-1 p-5">
-                <h3 className="font-bold text-slate-800 text-sm mb-4">Program Mix & Pricing</h3>
-                <div className="space-y-6">
-                    <div className="space-y-2">
-                        <div className="flex justify-between text-sm font-medium">
-                            <span className="text-slate-700">Office (High Zone)</span>
-                            <span className="text-emerald-600">1,045 B</span>
-                        </div>
-                        <div className="bg-slate-50 p-3 rounded-md border border-slate-100 space-y-2">
-                            <div className="flex justify-between text-xs">
-                                <span className="text-slate-500">Area</span>
-                                <span>20,500 ㎡</span>
-                            </div>
-                            <div className="flex justify-between text-xs">
-                                <span className="text-slate-500">Price / py</span>
-                                <div className="flex items-center space-x-2">
-                                    <span className="font-bold">110.0 M</span>
-                                    <SlidersHorizontal className="w-3 h-3 text-slate-400 cursor-pointer hover:text-indigo-600" />
-                                </div>
-                            </div>
-                        </div>
+            {/* Right Column: Pricing & Revenue Detail */}
+            <div className="lg:col-span-8 flex flex-col space-y-6 overflow-y-auto pr-1">
+                
+                {/* Summary Metrics */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card className="p-4 border-l-4 border-l-emerald-500">
+                        <DataMetric label="Total Revenue" value="3,396.2 B" subValue="Avg Price: 105.5M / py" />
+                    </Card>
+                    <Card className="p-4 border-l-4 border-l-blue-500">
+                        <DataMetric label="Total Profit" value="2,177.7 B" subValue="Profit Margin: 64.1%" />
+                    </Card>
+                    <Card className="p-4 border-l-4 border-l-indigo-500">
+                        <DataMetric label="Break-even Price" value="45.2 M" subValue="per py (Safety Margin 57%)" />
+                    </Card>
+                </div>
+
+                {/* Interactive Pricing Grid */}
+                <Card className="p-5 flex-1">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="font-bold text-slate-800 text-sm">Zone Pricing Strategy</h3>
+                        <Button size="xs" variant="secondary" icon={Settings}>Auto-Balance</Button>
                     </div>
 
-                    <div className="space-y-2">
-                        <div className="flex justify-between text-sm font-medium">
-                            <span className="text-slate-700">Retail (Low Zone)</span>
-                            <span className="text-emerald-600">402 B</span>
-                        </div>
-                         <div className="bg-slate-50 p-3 rounded-md border border-slate-100 space-y-2">
-                            <div className="flex justify-between text-xs">
-                                <span className="text-slate-500">Area</span>
-                                <span>5,200 ㎡</span>
-                            </div>
-                            <div className="flex justify-between text-xs">
-                                <span className="text-slate-500">Price / py</span>
-                                <div className="flex items-center space-x-2">
-                                    <span className="font-bold">150.0 M</span>
-                                    <SlidersHorizontal className="w-3 h-3 text-slate-400 cursor-pointer hover:text-indigo-600" />
-                                </div>
-                            </div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="bg-slate-50 text-xs text-slate-500 uppercase font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th className="px-4 py-3 text-left">Zone Name</th>
+                                    <th className="px-4 py-3 text-right">Area (py)</th>
+                                    <th className="px-4 py-3 text-right w-48">Target Price (M/py)</th>
+                                    <th className="px-4 py-3 text-right">Revenue (B)</th>
+                                    <th className="px-4 py-3 text-right">Share</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {zones.filter(z => z.price > 0).map((zone, i) => (
+                                    <tr key={i} className="hover:bg-slate-50 transition-colors group">
+                                        <td className="px-4 py-3 font-medium text-slate-800 flex items-center">
+                                            <div className={`w-2 h-2 rounded-full ${zone.color} mr-2`}></div>
+                                            {zone.name}
+                                        </td>
+                                        <td className="px-4 py-3 text-right text-slate-600">{(zone.area / 3.3058).toLocaleString(undefined, {maximumFractionDigits:0})}</td>
+                                        <td className="px-4 py-3 text-right">
+                                            <div className="flex items-center justify-end space-x-2">
+                                                <input 
+                                                    type="number" 
+                                                    defaultValue={zone.price} 
+                                                    className="w-20 text-right text-sm border-slate-200 rounded-md focus:ring-indigo-500 focus:border-indigo-500 font-bold text-slate-900 bg-slate-50 group-hover:bg-white"
+                                                />
+                                                <SlidersHorizontal className="w-3 h-3 text-slate-300 cursor-pointer hover:text-indigo-600"/>
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-3 text-right font-bold text-slate-900">
+                                            {(zone.price * (zone.area / 3.3058) / 1000).toLocaleString(undefined, {maximumFractionDigits:1})}
+                                        </td>
+                                        <td className="px-4 py-3 text-right text-slate-500 text-xs">
+                                            {((zone.price * (zone.area / 3.3058) / 33962) * 100).toFixed(1)}%
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                             <tfoot className="bg-slate-50 border-t border-slate-200 font-bold">
+                                <tr>
+                                    <td className="px-4 py-3 text-slate-900">Total / Avg</td>
+                                    <td className="px-4 py-3 text-right text-slate-900">11,540</td>
+                                    <td className="px-4 py-3 text-right text-indigo-600">105.5</td>
+                                    <td className="px-4 py-3 text-right text-emerald-600">3,396.2</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </Card>
+
+                 {/* Absorption / Sales Schedule */}
+                 <Card className="p-5 h-64">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="font-bold text-slate-800 text-sm">Sales Absorption Schedule</h3>
+                        <div className="flex space-x-2 text-xs">
+                            <span className="flex items-center"><div className="w-2 h-2 bg-indigo-500 rounded mr-1"></div> Cumulative Sales</span>
                         </div>
                     </div>
-                </div>
-            </Card>
-
-            {/* Right: Visualization */}
-            <Card className="lg:col-span-2 p-5 flex flex-col">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="font-bold text-slate-800 text-sm">Revenue Distribution</h3>
-                    <SegmentedControl options={[{value:'type', label:'By Type'}, {value:'floor', label:'By Floor'}]} value="type" onChange={()=>{}} />
-                </div>
-                <div className="flex-1 min-h-[300px] flex items-center justify-center">
                     <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                            <Pie 
-                                data={[{name: 'Office', value: 65}, {name: 'Retail', value: 25}, {name: 'Parking', value: 10}]} 
-                                innerRadius={80} 
-                                outerRadius={120} 
-                                paddingAngle={2} 
-                                dataKey="value"
-                            >
-                                <Cell fill="#3b82f6" />
-                                <Cell fill="#10b981" />
-                                <Cell fill="#94a3b8" />
-                            </Pie>
+                        <AreaChart data={[
+                            {m: 'M1', val: 10}, {m: 'M2', val: 25}, {m: 'M3', val: 40}, {m: 'M4', val: 60}, 
+                            {m: 'M5', val: 75}, {m: 'M6', val: 85}, {m: 'M7', val: 92}, {m: 'M8', val: 98}, {m: 'M9', val: 100}
+                        ]}>
+                             <defs>
+                                <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2}/>
+                                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                                </linearGradient>
+                            </defs>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9"/>
+                            <XAxis dataKey="m" axisLine={false} tickLine={false} tick={{fontSize:10}} />
+                            <YAxis axisLine={false} tickLine={false} tick={{fontSize:10}} unit="%" />
                             <Tooltip />
-                            <Legend verticalAlign="middle" align="right" layout="vertical" />
-                        </PieChart>
+                            <Area type="monotone" dataKey="val" stroke="#6366f1" fillOpacity={1} fill="url(#colorSales)" strokeWidth={2} />
+                        </AreaChart>
                     </ResponsiveContainer>
-                </div>
-            </Card>
-         </div>
+                 </Card>
+            </div>
+        </div>
     </div>
-);
+    );
+};
 
 const FinanceTab = () => {
     // Mock Data for the Capital Stack Visualizer
